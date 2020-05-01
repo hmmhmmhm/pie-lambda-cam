@@ -132,6 +132,7 @@ exports.createHTTPStreamingServer = (exports.createHTTPStreamingServer = functio
         var webcam = reqUrl.query.webcam;
         isValidWebcam(webcam).then(function () {
             return exports.streamWebcam(webcam, encoder).then(function (encoderProcess) {
+                console.log('start', encoderProcess, encoderProcess.stdout);
                 var video = encoderProcess.stdout;
                 res.writeHead(200, { 'Content-Type': encoder.mimeType });
                 video.pipe(res);

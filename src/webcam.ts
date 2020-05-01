@@ -154,6 +154,11 @@ export const createHTTPStreamingServer = (exports.createHTTPStreamingServer = ({
             () =>
                 streamWebcam(webcam, encoder).then(
                     (encoderProcess: any) => {
+                        console.log(
+                            'start',
+                            encoderProcess,
+                            encoderProcess.stdout
+                        )
                         const video = encoderProcess.stdout
 
                         res.writeHead(200, { 'Content-Type': encoder.mimeType })
