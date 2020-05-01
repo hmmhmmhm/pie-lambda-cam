@@ -1,7 +1,7 @@
-import webcam from 'webcam-http-streaming'
+// import webcam from 'webcam-http-streaming'
+import * as webcam from './webcam'
 import * as fs from 'fs'
 
-console.log('webcam', webcam)
 export const fileExists = (file) => {
     const access = fs.access
 
@@ -21,8 +21,8 @@ export const encoder = {
      * written to stdout
      *   Default: shown below
      */
-    flags(webcam) {
-        return `-f video4linux2 -i ${webcam} -f webm -deadline realtime pipe:1`
+    flags(_webcam) {
+        return `-f video4linux2 -i ${_webcam} -f webm -deadline realtime pipe:1`
     },
     /*
      * MIME type of the output stream
@@ -102,7 +102,7 @@ export const startServer = () => {
                     res.end('<html>...</html>')
                 },
             },
-            encoder: encoder,
+            encoder,
         })
         .listen(8080)
 
