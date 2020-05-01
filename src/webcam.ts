@@ -67,6 +67,7 @@ export const isValidWebcamDefault = (webcam) => {
     const webcamRegex = /\/dev\/video[0-9]+/
 
     return new Promise((accept, reject) => {
+        console.log('webcamRegex.test(webcam)', webcamRegex.test(webcam))
         if (!webcamRegex.test(webcam)) {
             reject(false)
         } else {
@@ -82,9 +83,11 @@ export const isValidWebcamWhitelist = (whitelistArray) => {
     whitelistArray.forEach((webcam) => (whitelist[webcam] = 'valid'))
 
     return (webcam) =>
-        new Promise((accept, reject) =>
+        new Promise((accept, reject) => {
+            console.log('webcam in whitelist', webcam in whitelist)
+            console.log('whitelist', whitelist)
             webcam in whitelist ? accept(true) : reject(false)
-        )
+        })
 }
 
 export const defaultPage = (req, res, req_url) => {

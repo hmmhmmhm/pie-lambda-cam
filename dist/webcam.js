@@ -65,6 +65,7 @@ exports.fileExists = function (file) {
 exports.isValidWebcamDefault = function (webcam) {
     var webcamRegex = /\/dev\/video[0-9]+/;
     return new Promise(function (accept, reject) {
+        console.log('webcamRegex.test(webcam)', webcamRegex.test(webcam));
         if (!webcamRegex.test(webcam)) {
             reject(false);
         }
@@ -80,7 +81,9 @@ exports.isValidWebcamWhitelist = function (whitelistArray) {
     whitelistArray.forEach(function (webcam) { return (whitelist[webcam] = 'valid'); });
     return function (webcam) {
         return new Promise(function (accept, reject) {
-            return webcam in whitelist ? accept(true) : reject(false);
+            console.log('webcam in whitelist', webcam in whitelist);
+            console.log('whitelist', whitelist);
+            webcam in whitelist ? accept(true) : reject(false);
         });
     };
 };
