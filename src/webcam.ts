@@ -131,6 +131,7 @@ export const streamWebcam = (
     const encoderFlags = flags(webcam).split(' ')
     let videoEncoder = undefined
     try {
+        console.log(command, encoderFlags.join(' '))
         videoEncoder = spawn(command, encoderFlags)
     } catch (e) {
         console.log(e)

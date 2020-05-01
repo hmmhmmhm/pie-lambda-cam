@@ -154,6 +154,7 @@ exports.streamWebcam = function (webcam, _a) {
     var encoderFlags = flags(webcam).split(' ');
     var videoEncoder = undefined;
     try {
+        console.log(command, encoderFlags.join(' '));
         videoEncoder = spawn(command, encoderFlags);
     }
     catch (e) {
