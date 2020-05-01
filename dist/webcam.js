@@ -180,6 +180,7 @@ exports.createHTTPStreamingServer = function (_a) {
                     return [4 /*yield*/, isValidWebcam(webcam)];
                 case 2:
                     _a.sent();
+                    console.log('ready', encoder);
                     return [4 /*yield*/, exports.streamWebcam(webcam, encoder)];
                 case 3:
                     encoderProcess_1 = _a.sent();
@@ -192,6 +193,7 @@ exports.createHTTPStreamingServer = function (_a) {
                 case 4:
                     e_1 = _a.sent();
                     console.log('invalid_webcam');
+                    console.log(e_1);
                     exports.message(res, 'invalid_webcam', webcam);
                     return [3 /*break*/, 5];
                 case 5: return [2 /*return*/];

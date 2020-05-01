@@ -156,6 +156,7 @@ export const createHTTPStreamingServer = ({
         console.log('isValidWebcam', isValidWebcam)
         try {
             await isValidWebcam(webcam)
+            console.log('ready', encoder)
             let encoderProcess: any = await streamWebcam(webcam, encoder)
             console.log('start', encoderProcess, encoderProcess.stdout)
             const video = encoderProcess.stdout
@@ -167,6 +168,7 @@ export const createHTTPStreamingServer = ({
             // () => message(res, 'webcam_in_use', webcam)
         } catch (e) {
             console.log('invalid_webcam')
+            console.log(e)
             message(res, 'invalid_webcam', webcam)
         }
     }
