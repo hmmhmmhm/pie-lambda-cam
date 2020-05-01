@@ -85,7 +85,7 @@ export const isValidWebcamWhitelist = (whitelistArray) => {
     return (webcam) =>
         new Promise((accept, reject) => {
             console.log('webcam in whitelist', webcam in whitelist)
-            console.log('whitelist', whitelist)
+            console.log('whitelist', whitelist, webcam)
             webcam in whitelist ? accept(true) : reject(false)
         })
 }
