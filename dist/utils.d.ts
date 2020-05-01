@@ -7,5 +7,5 @@ export declare const encoder: {
 };
 export declare const startServer: () => {
     server: any;
-    videoStream: Promise<unknown>;
+    videoStream: any;
 };

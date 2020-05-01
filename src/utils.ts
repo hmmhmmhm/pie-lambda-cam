@@ -107,7 +107,11 @@ export const startServer = () => {
         .listen(8080)
 
     /* Returns a promise that resolves to the video stream (stream.Readable) */
-    const videoStream = webcam.streamWebcam('/dev/video0', encoder)
-
+    let videoStream: any = undefined
+    try {
+        videoStream = webcam.streamWebcam('/dev/video0', encoder)
+    } catch (e) {
+        console.log(e)
+    }
     return { server, videoStream }
 }

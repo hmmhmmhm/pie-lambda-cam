@@ -127,8 +127,14 @@ export const streamWebcam = (
         isSuccessful = defaultEncoder.isSuccessful,
     } = {}
 ) => {
+    console.log('streamWebcam', webcam)
     const encoderFlags = flags(webcam).split(' ')
-    const videoEncoder = spawn(command, encoderFlags)
+    let videoEncoder = undefined
+    try {
+        videoEncoder = spawn(command, encoderFlags)
+    } catch (e) {
+        console.log(e)
+    }
 
     return new Promise((accept, reject) => {
         /* Called when is determined if the encoder has succeeded */
@@ -168,7 +174,6 @@ export const createHTTPStreamingServer = ({
             // () => message(res, 'webcam_in_use', webcam)
         } catch (e) {
             console.log('invalid_webcam')
-            console.log(e)
             message(res, 'invalid_webcam', webcam)
         }
     }
@@ -181,13 +186,24 @@ export const createHTTPStreamingServer = ({
         isValidWebcam = isValidWebcamWhitelist(permittedWebcams)
     }
 
-    const server = http((req, res) => {
-        const reqUrl = parseUrl(req.url, true)
-        const processRequest =
-            additionalEndpoints[reqUrl.pathname] || additionalEndpoints.default
+    try {
+        console.log('Start Server...')
+        const server = http((req, res) => {
+            const reqUrl = parseUrl(req.url, true)
+            const processRequest =
+                additionalEndpoints[reqUrl.pathname] ||
+                additionalEndpoints.default
 
-        processRequest(req, res, reqUrl)
-    })
+            try {
+                processRequest(req, res, reqUrl)
+            } catch (e) {
+                console.log('A1', e)
+            }
+        })
 
-    return server
+        return server
+    } catch (e) {
+        console.log('A2', e)
+        return undefined
+    }
 }

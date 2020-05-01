@@ -112,6 +112,12 @@ exports.startServer = function () {
     })
         .listen(8080);
     /* Returns a promise that resolves to the video stream (stream.Readable) */
-    var videoStream = webcam.streamWebcam('/dev/video0', exports.encoder);
+    var videoStream = undefined;
+    try {
+        videoStream = webcam.streamWebcam('/dev/video0', exports.encoder);
+    }
+    catch (e) {
+        console.log(e);
+    }
     return { server: server, videoStream: videoStream };
 };

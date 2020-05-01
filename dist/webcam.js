@@ -150,8 +150,15 @@ exports.message = function (res, code) {
  */
 exports.streamWebcam = function (webcam, _a) {
     var _b = _a === void 0 ? {} : _a, _c = _b.command, command = _c === void 0 ? exports.defaultEncoder.command : _c, _d = _b.flags, flags = _d === void 0 ? exports.defaultEncoder.flags : _d, _e = _b.isSuccessful, isSuccessful = _e === void 0 ? exports.defaultEncoder.isSuccessful : _e;
+    console.log('streamWebcam', webcam);
     var encoderFlags = flags(webcam).split(' ');
-    var videoEncoder = spawn(command, encoderFlags);
+    var videoEncoder = undefined;
+    try {
+        videoEncoder = spawn(command, encoderFlags);
+    }
+    catch (e) {
+        console.log(e);
+    }
     return new Promise(function (accept, reject) {
         /* Called when is determined if the encoder has succeeded */
         function resolveSucess(hasSucceeded) {
@@ -193,7 +200,6 @@ exports.createHTTPStreamingServer = function (_a) {
                 case 4:
                     e_1 = _a.sent();
                     console.log('invalid_webcam');
-                    console.log(e_1);
                     exports.message(res, 'invalid_webcam', webcam);
                     return [3 /*break*/, 5];
                 case 5: return [2 /*return*/];
@@ -206,10 +212,23 @@ exports.createHTTPStreamingServer = function (_a) {
         console.log('permittedWebcams', permittedWebcams);
         isValidWebcam = exports.isValidWebcamWhitelist(permittedWebcams);
     }
-    var server = http(function (req, res) {
-        var reqUrl = parseUrl(req.url, true);
-        var processRequest = additionalEndpoints[reqUrl.pathname] || additionalEndpoints["default"];
-        processRequest(req, res, reqUrl);
-    });
-    return server;
+    try {
+        console.log('Start Server...');
+        var server = http(function (req, res) {
+            var reqUrl = parseUrl(req.url, true);
+            var processRequest = additionalEndpoints[reqUrl.pathname] ||
+                additionalEndpoints["default"];
+            try {
+                processRequest(req, res, reqUrl);
+            }
+            catch (e) {
+                console.log('A1', e);
+            }
+        });
+        return server;
+    }
+    catch (e) {
+        console.log('A2', e);
+        return undefined;
+    }
 };
