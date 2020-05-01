@@ -66,6 +66,7 @@ export const fileExists = (file) => {
 export const isValidWebcamDefault = (webcam) => {
     const webcamRegex = /\/dev\/video[0-9]+/
 
+    console.log('isValidWebcamDefault')
     return new Promise((accept, reject) => {
         console.log('webcamRegex.test(webcam)', webcamRegex.test(webcam))
         if (!webcamRegex.test(webcam)) {
@@ -140,42 +141,41 @@ export const streamWebcam = (
     })
 }
 
-export const createHTTPStreamingServer = (exports.createHTTPStreamingServer = ({
+export const createHTTPStreamingServer = ({
     permittedWebcams,
     isValidWebcam = isValidWebcamDefault,
     webcamEndpoint = '/webcam',
     additionalEndpoints = {},
     encoder = defaultEncoder,
 }: any = {}) => {
-    additionalEndpoints[webcamEndpoint] = (req, res, reqUrl) => {
+    console.log('createHTTPStreamingServer')
+    additionalEndpoints[webcamEndpoint] = async (req, res, reqUrl) => {
         const webcam = reqUrl.query.webcam
 
-        isValidWebcam(webcam).then(
-            () =>
-                streamWebcam(webcam, encoder).then(
-                    (encoderProcess: any) => {
-                        console.log(
-                            'start',
-                            encoderProcess,
-                            encoderProcess.stdout
-                        )
-                        const video = encoderProcess.stdout
+        console.log('webcam', webcam)
+        console.log('isValidWebcam', isValidWebcam)
+        try {
+            await isValidWebcam(webcam)
+            let encoderProcess: any = await streamWebcam(webcam, encoder)
+            console.log('start', encoderProcess, encoderProcess.stdout)
+            const video = encoderProcess.stdout
 
-                        res.writeHead(200, { 'Content-Type': encoder.mimeType })
-                        video.pipe(res)
+            res.writeHead(200, { 'Content-Type': encoder.mimeType })
+            video.pipe(res)
 
-                        res.on('close', () => encoderProcess.kill('SIGTERM'))
-                    },
-                    () => message(res, 'webcam_in_use', webcam)
-                ),
-            () => message(res, 'invalid_webcam', webcam)
-        )
+            res.on('close', () => encoderProcess.kill('SIGTERM'))
+            // () => message(res, 'webcam_in_use', webcam)
+        } catch (e) {
+            console.log('invalid_webcam')
+            message(res, 'invalid_webcam', webcam)
+        }
     }
 
     additionalEndpoints.default = additionalEndpoints.default || defaultPage
     fillDefaults(encoder, defaultEncoder)
 
     if (permittedWebcams) {
+        console.log('permittedWebcams', permittedWebcams)
         isValidWebcam = isValidWebcamWhitelist(permittedWebcams)
     }
 
@@ -188,4 +188,4 @@ export const createHTTPStreamingServer = (exports.createHTTPStreamingServer = ({
     })
 
     return server
-})
+}
